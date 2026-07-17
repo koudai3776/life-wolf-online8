@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🐺 人狼 ONLINE</title>
+<script src="/socket.io/socket.io.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ログイン -->
+<div id="s-login" class="screen active">
+<div class="wf-logo">🐺 人狼 ONLINE</div>
+<a href="/" class="top-back-link">← トップへ戻る</a>
+<div class="card">
+  <input id="inp-name" class="inp" placeholder="プレイヤー名" maxlength="12" onkeydown="if(event.key==='Enter')createRoom()">
+  <input id="inp-room" class="inp" placeholder="ルームID（参加する場合）" maxlength="6" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')joinRoom()">
+  <button class="btn btn-blue" onclick="createRoom()">🏠 ルーム作成</button>
+  <button class="btn btn-gray" onclick="joinRoom()">🚪 ルーム参加</button>
+  <div id="login-err" class="err"></div>
+</div>
+</div>
+
+<!-- ロビー -->
+<div id="s-lobby" class="screen">
+<div class="card" style="max-width:600px">
+  <h2>🐺 人狼 ONLINE</h2>
+  <div id="lobby-room-banner">
+    ルームID：<span id="lobby-rid">----</span>
+    <button class="btn btn-gray btn-sm" onclick="copyRoomId()" style="margin-left:10px">📋 コピー</button>
+  </div>
+  <div id="lobby-players"></div>
+
+  <div id="lobby-host-area" style="display:none">
+    <div id="lobby-btn-row">
+      <button class="btn btn-gray" onclick="addCPU()">🤖 CPU追加</button>
+      <button class="btn btn-gray" onclick="removeCPU()">🤖 CPU削除</button>
+    </div>
+
+    <!-- 役職設定 -->
+    <div id="role-config">
+      <button id="role-config-toggle" onclick="toggleRoleConfig()">⚙️ 役職設定（クリックで開く）</button>
+      <div id="role-config-body">
+        <div class="role-summary">
+          <span>選択：<b id="rc-total">0</b> / <b id="rc-players">0</b> プレイヤー
+            <span id="rc-warn" class="ng"></span></span>
+          <div class="preset-btns">
+            <button class="btn btn-gray btn-sm" onclick="setDefaultRoles()">📋 デフォルト</button>
+            <button class="btn btn-gray btn-sm" onclick="clearRoles()">🗑️ クリア</button>
+          </div>
+        </div>
+        <div id="role-grid"></div>
+
+        <!-- タイマー設定 -->
+        <div id="timer-config">
+          <div class="tc-title">⏱️ タイムリミット設定</div>
+          <div class="tc-row">
+            <span class="tc-label">🌙 夜</span>
+            <div class="tc-btns" id="tcb-night">
+              <button class="tc-btn" data-val="30"  onclick="setTimer('night',30)">30秒</button>
+              <button class="tc-btn sel" data-val="60" onclick="setTimer('night',60)">60秒</button>
+              <button class="tc-btn" data-val="90"  onclick="setTimer('night',90)">90秒</button>
+              <button class="tc-btn" data-val="120" onclick="setTimer('night',120)">120秒</button>
+              <button class="tc-btn" data-val="0"   onclick="setTimer('night',0)">無制限</button>
+            </div>
+          </div>
+          <div class="tc-row">
+            <span class="tc-label">💬 議論</span>
+            <div class="tc-btns" id="tcb-discuss">
+              <button class="tc-btn" data-val="30"  onclick="setTimer('discuss',30)">30秒</button>
+              <button class="tc-btn" data-val="60"  onclick="setTimer('discuss',60)">60秒</button>
+              <button class="tc-btn sel" data-val="90" onclick="setTimer('discuss',90)">90秒</button>
+              <button class="tc-btn" data-val="120" onclick="setTimer('discuss',120)">120秒</button>
+              <button class="tc-btn" data-val="0"   onclick="setTimer('discuss',0)">無制限</button>
+            </div>
+          </div>
+          <div class="tc-row">
+            <span class="tc-label">🗳️ 投票</span>
+            <div class="tc-btns" id="tcb-vote">
+              <button class="tc-btn" data-val="30"  onclick="setTimer('vote',30)">30秒</button>
+              <button class="tc-btn sel" data-val="60" onclick="setTimer('vote',60)">60秒</button>
+              <button class="tc-btn" data-val="90"  onclick="setTimer('vote',90)">90秒</button>
+              <button class="tc-btn" data-val="120" onclick="setTimer('vote',120)">120秒</button>
+              <button class="tc-btn" data-val="0"   onclick="setTimer('vote',0)">無制限</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="info-mode-config">
+          <div class="tc-title">📋 ゲーム開始時の役職情報</div>
+          <div class="tc-row">
+            <span class="tc-label" style="white-space:nowrap">表示形式</span>
+            <div class="tc-btns" id="tcb-infomode">
+              <button class="tc-btn sel" data-val="full"    onclick="setInfoMode('full')">🔍 役職構成を表示</button>
+              <button class="tc-btn"     data-val="faction" onclick="setInfoMode('faction')">🏳️ 陣営ごとに表示</button>
+              <button class="tc-btn"     data-val="hidden"  onclick="setInfoMode('hidden')">🙈 非表示</button>
+            </div>
+          </div>
+          <div id="im-hint" class="im-hint">初心者向け：役職と人数が全員に見えます</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-green" onclick="startGame()" style="margin-top:14px">▶ ゲーム開始</button>
+    <a href="javascript:void(0)" class="top-back-link" style="margin-top:8px" onclick="location.reload()">← ルーム作成画面へ戻る</a>
+  </div>
+
+  <p style="font-size:12px;color:#4050a0;margin-top:10px">ホストがゲームを開始するまでお待ちください</p>
+  <div id="lobby-err" class="err"></div>
+</div>
+</div>
+
+<!-- ゲーム -->
+<div id="s-game" class="screen">
+  <header id="game-header">
+    <div id="role-badge" onclick="toggleRoleTooltip()" title="クリックで役職説明を表示" style="cursor:pointer">役職</div>
+    <div id="phase-label">待機中</div>
+    <!-- タイマー表示 -->
+    <div id="timer-box">
+      <div id="timer-text">--</div>
+      <div id="timer-bar-wrap"><div id="timer-bar-fill" style="width:100%;background:#27ae60"></div></div>
+    </div>
+    <div id="host-btns">
+      <button id="btn-fn" class="hbtn" onclick="socket.emit('finishNight',G.roomId)">🌙 夜を終了</button>
+      <button id="btn-fd" class="hbtn" onclick="socket.emit('finishDiscuss',G.roomId)">💬 投票へ</button>
+      <button id="btn-fv" class="hbtn" onclick="socket.emit('finishVote',G.roomId)">⚖️ 投票確定</button>
+    </div>
+  </header>
+
+  <div id="game-main">
+    <div id="players-panel">
+      <h3>👥 プレイヤー</h3>
+      <div id="players-list"></div>
+    </div>
+    <div id="right-panel">
+      <div id="action-panel"></div>
+      <div id="chat-area">
+        <div id="chat-messages"></div>
+        <div id="reaction-bar">
+          <button class="rxn-btn" onclick="sendReaction('😀')">😀</button>
+          <button class="rxn-btn" onclick="sendReaction('👍')">👍</button>
+          <button class="rxn-btn" onclick="sendReaction('❗')">❗</button>
+          <button class="rxn-btn" onclick="sendReaction('🤔')">🤔</button>
+          <button class="rxn-btn" onclick="sendReaction('😂')">😂</button>
+        </div>
+        <div id="chat-row">
+          <input id="chat-input" placeholder="メッセージ…" onkeydown="if(event.key==='Enter')sendChat()">
+          <button id="btn-send" onclick="sendChat()">送信</button>
+        </div>
+        <!-- 観戦チャット（死亡者専用・生存者には届かない） -->
+        <div id="spec-bar" style="display:none">
+          <div id="spec-messages"></div>
+          <div id="spec-row">
+            <input id="spec-input" placeholder="👻 観戦チャット（死亡者のみ）…" onkeydown="if(event.key==='Enter')sendSpecChat()">
+            <button id="btn-spec" onclick="sendSpecChat()">送信</button>
+          </div>
+        </div>
+      </div>
+      <div id="log-area"><div id="game-logs"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 役職説明ツールチップ（ゲーム中いつでも確認可能） -->
+<div id="role-tooltip" class="role-tooltip">
+  <div id="rt-header" style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <span id="rt-icon" style="font-size:26px"></span>
+    <div>
+      <div id="rt-name" style="font-size:16px;font-weight:700"></div>
+      <div id="rt-team" style="font-size:11px;color:#7080a0"></div>
+    </div>
+    <button onclick="toggleRoleTooltip()" style="margin-left:auto;background:none;border:none;color:#7080a0;font-size:18px;line-height:1">✕</button>
+  </div>
+  <div id="rt-desc" style="font-size:13px;color:#a0b0c0;line-height:1.7"></div>
+  <!-- 占い師：過去の占い結果も表示 -->
+  <div id="rt-seer-history" style="margin-top:10px;display:none">
+    <div style="font-size:11px;font-weight:700;color:#7080a0;margin-bottom:5px">占い結果メモ</div>
+    <div id="rt-seer-list"></div>
+  </div>
+</div>
+
+<!-- ゲームオーバー -->
+<div id="s-gameover" class="screen">
+<div class="card" style="max-width:600px">
+  <div id="winner-banner"></div>
+  <p id="winner-sub" style="color:#6070a0;margin-bottom:14px"></p>
+  <div id="final-roles"></div>
+  <button class="btn btn-blue" onclick="location.reload()" style="margin-top:18px">🔄 もう一度プレイ</button>
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

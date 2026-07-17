@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🎲 LIFE WOLF</title>
+<link rel="stylesheet" href="lifeWolf.css">
+</head>
+<body>
+
+<!-- ロビー画面 -->
+<div id="s-lobby" class="screen">
+  <div class="lb-center">
+    <div class="lw-logo">🎲 LIFE WOLF</div>
+    <div class="lw-sub">人狼 × 人生ゲーム</div>
+    <a href="/" class="lb-back">← トップへ戻る</a>
+    <div class="lb-card">
+      <input id="lw-name"    class="lb-input" type="text" placeholder="プレイヤー名" maxlength="12">
+      <input id="lw-room-id" class="lb-input" type="text" placeholder="ルームID（参加する場合）" maxlength="6" style="text-transform:uppercase" oninput="this.value = this.value.toUpperCase()">
+      <button class="lb-btn lb-btn-primary"   onclick="createRoom()">🏠 ルーム作成</button>
+      <button class="lb-btn lb-btn-secondary" onclick="joinRoom()">📋 ルーム参加</button>
+      <div id="lw-err" class="lw-err" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ルーム設定画面 -->
+<div id="s-room" class="screen" style="display:none">
+  <div class="rs-wrap">
+
+    <!-- ロゴ -->
+    <div class="rs-logo-row">
+      <div class="lw-logo-sm">🎲 LIFE WOLF</div>
+    </div>
+
+    <!-- ルームID -->
+    <div class="rs-id-bar">
+      <span class="rs-id-label">ルームID：</span>
+      <span class="rs-id-val" id="room-code-display">——</span>
+      <button class="rs-copy-btn" onclick="copyRoomId()">📋 コピー</button>
+    </div>
+
+    <!-- プレイヤーリスト -->
+    <div id="room-players"></div>
+
+    <!-- CPU操作（ホストのみ） -->
+    <div class="rs-cpu-row" id="rs-cpu-row" style="display:none">
+      <button class="rs-cpu-btn" onclick="addCpu()">🤖 CPU追加</button>
+      <button class="rs-cpu-btn" onclick="removeCpu()">🤖 CPU削除</button>
+    </div>
+
+    <!-- 役職設定アコーディオン（ホストのみ） -->
+    <div id="rs-role-section" style="display:none">
+      <button class="rs-accord-btn" onclick="toggleRoleSettings()">
+        <span>⚙️ 役職設定</span>
+        <span id="rs-accord-arrow">▼</span>
+      </button>
+      <div class="rs-accord-body" id="rs-accord-body" style="display:none">
+        <div class="rs-role-head">
+          <span id="rs-role-count">選択: 0 / 0 プレイヤー</span>
+          <div style="display:flex;gap:8px">
+            <button class="rs-preset-btn" onclick="setRoleDefault()">📋 デフォルト</button>
+            <button class="rs-preset-btn" onclick="clearRoles()">🗑 クリア</button>
+          </div>
+        </div>
+
+        <div class="rs-camp-label village">🏘 村人陣営</div>
+        <div class="rs-role-grid">
+          <div class="rs-role-card">
+            <div class="rs-role-icon">👤</div>
+            <div class="rs-role-name">市民</div>
+            <div class="rs-role-desc">特殊能力なし。議論で人狼を見つけよう。</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('villager',-1)">－</button>
+              <span id="rc-villager">0</span>
+              <button onclick="changeRole('villager',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card">
+            <div class="rs-role-icon">🔮</div>
+            <div class="rs-role-name">占い師</div>
+            <div class="rs-role-desc">人狼かどうかを占える（CT:2）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('seer',-1)">－</button>
+              <span id="rc-seer">0</span>
+              <button onclick="changeRole('seer',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card">
+            <div class="rs-role-icon">🕵️</div>
+            <div class="rs-role-name">探偵</div>
+            <div class="rs-role-desc">現在の資産を調査できる（CTなし）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('detective',-1)">－</button>
+              <span id="rc-detective">0</span>
+              <button onclick="changeRole('detective',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card">
+            <div class="rs-role-icon">⚖️</div>
+            <div class="rs-role-name">弁護士</div>
+            <div class="rs-role-desc">誰かを処刑（投票）から守れる（CT:2）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('lawyer',-1)">－</button>
+              <span id="rc-lawyer">0</span>
+              <button onclick="changeRole('lawyer',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card">
+            <div class="rs-role-icon">💂</div>
+            <div class="rs-role-name">警備員</div>
+            <div class="rs-role-desc">誰かを人狼の暗殺から守れる（CT:2）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('guard',-1)">－</button>
+              <span id="rc-guard">0</span>
+              <button onclick="changeRole('guard',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card">
+            <div class="rs-role-icon">⛪</div>
+            <div class="rs-role-name">神父</div>
+            <div class="rs-role-desc">処刑された人の正体をこっそり教えてもらえる</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('priest',-1)">－</button>
+              <span id="rc-priest">0</span>
+              <button onclick="changeRole('priest',+1)">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rs-camp-label wolf">🐺 人狼陣営</div>
+        <div class="rs-role-grid">
+          <div class="rs-role-card wolf-border">
+            <div class="rs-role-icon">🐺</div>
+            <div class="rs-role-name">人狼</div>
+            <div class="rs-role-desc">暗殺で資産の20%を奪う（CT:2）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('werewolf',-1)">－</button>
+              <span id="rc-werewolf">1</span>
+              <button onclick="changeRole('werewolf',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card wolf-border">
+            <div class="rs-role-icon">🎭</div>
+            <div class="rs-role-name">詐欺師</div>
+            <div class="rs-role-desc">占いの結果を「人狼ではない」に偽装できる（CT:2）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('scammer',-1)">－</button>
+              <span id="rc-scammer">0</span>
+              <button onclick="changeRole('scammer',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card wolf-border">
+            <div class="rs-role-icon">🎰</div>
+            <div class="rs-role-name">ギャンブラー</div>
+            <div class="rs-role-desc">50%で資産30%を奪い、50%で自分が15%失う（CT:2）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('gambler',-1)">－</button>
+              <span id="rc-gambler">0</span>
+              <button onclick="changeRole('gambler',+1)">＋</button>
+            </div>
+          </div>
+          <div class="rs-role-card wolf-border">
+            <div class="rs-role-icon">🕶️</div>
+            <div class="rs-role-name">スパイ</div>
+            <div class="rs-role-desc">占われても常に「人狼ではない」に見える（常時効果）</div>
+            <div class="rs-counter-row">
+              <button onclick="changeRole('spy',-1)">－</button>
+              <span id="rc-spy">0</span>
+              <button onclick="changeRole('spy',+1)">＋</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rs-villager-note">※ 市民は残り枠に自動補填されます</div>
+      </div>
+    </div>
+
+    <!-- 対戦形式（ホストのみ） -->
+    <div id="rs-battle-section" style="display:none">
+      <div class="rs-mode-label">🎯 対戦形式</div>
+      <div class="rs-mode-btns">
+        <button class="rs-mode-btn active" id="rm-team" onclick="setBattleType('team')">
+          🐺 陣営戦<span>陣営の資産平均が多い方が勝利</span>
+        </button>
+        <button class="rs-mode-btn" id="rm-individual" onclick="setBattleType('individual')">
+          🏆 個人戦<span>資産が一番多いプレイヤーが勝利</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 脱落設定（ホストのみ） -->
+    <div id="rs-elim-section" style="display:none">
+      <div class="rs-mode-label">☠️ 脱落設定</div>
+      <div class="rs-mode-btns">
+        <button class="rs-mode-btn active" id="rm-elim" onclick="setElimination('elim')">
+          🔴 脱落あり<span>処刑されたら即終了・緊張感重視</span>
+        </button>
+        <button class="rs-mode-btn" id="rm-survive" onclick="setElimination('survive')">
+          🟡 脱落なし<span>処刑されても資産半減して継続</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 最大ラウンド数設定（ホストのみ） -->
+    <div id="rs-rounds-section" style="display:none">
+      <div class="rs-mode-label">🔁 最大ラウンド数</div>
+      <div class="rs-rounds-row">
+        <button class="rs-rounds-btn" onclick="changeMaxRounds(-1)">－</button>
+        <span class="rs-rounds-val" id="rs-rounds-val">10</span>
+        <span class="rs-rounds-unit">ラウンド</span>
+        <button class="rs-rounds-btn" onclick="changeMaxRounds(+1)">＋</button>
+      </div>
+      <div class="rs-rounds-hint">3〜30ラウンドの範囲で設定できます</div>
+    </div>
+
+    <!-- 非ホスト向け最大ラウンド数表示 -->
+    <div id="rs-rounds-view" style="display:none">
+      <div class="rs-mode-label">🔁 最大ラウンド数</div>
+      <div id="rs-rounds-view-text" class="rs-mode-view-text"></div>
+    </div>
+
+    <!-- タイムリミット設定（ホストのみ） -->
+    <div id="rs-time-section" style="display:none">
+      <div class="rs-mode-label">⏱️ タイムリミット設定</div>
+      <div class="lw-tc-wrap">
+        <div class="lw-tc-row">
+          <span class="lw-tc-label">🎴 能力フェーズ</span>
+          <div class="lw-tc-btns" id="tcb-lw-ability">
+            <button class="lw-tc-btn" data-val="30"  onclick="setLwTimer('ability',30)">30秒</button>
+            <button class="lw-tc-btn sel" data-val="60" onclick="setLwTimer('ability',60)">60秒</button>
+            <button class="lw-tc-btn" data-val="90"  onclick="setLwTimer('ability',90)">90秒</button>
+            <button class="lw-tc-btn" data-val="120" onclick="setLwTimer('ability',120)">120秒</button>
+            <button class="lw-tc-btn" data-val="0"   onclick="setLwTimer('ability',0)">無制限</button>
+          </div>
+        </div>
+        <div class="lw-tc-row">
+          <span class="lw-tc-label">💬 会議フェーズ</span>
+          <div class="lw-tc-btns" id="tcb-lw-council">
+            <button class="lw-tc-btn" data-val="30"  onclick="setLwTimer('council',30)">30秒</button>
+            <button class="lw-tc-btn" data-val="60"  onclick="setLwTimer('council',60)">60秒</button>
+            <button class="lw-tc-btn sel" data-val="90" onclick="setLwTimer('council',90)">90秒</button>
+            <button class="lw-tc-btn" data-val="120" onclick="setLwTimer('council',120)">120秒</button>
+            <button class="lw-tc-btn" data-val="0"   onclick="setLwTimer('council',0)">無制限</button>
+          </div>
+        </div>
+        <div class="lw-tc-row">
+          <span class="lw-tc-label">🗳️ 投票フェーズ</span>
+          <div class="lw-tc-btns" id="tcb-lw-vote">
+            <button class="lw-tc-btn" data-val="30"  onclick="setLwTimer('vote',30)">30秒</button>
+            <button class="lw-tc-btn sel" data-val="60" onclick="setLwTimer('vote',60)">60秒</button>
+            <button class="lw-tc-btn" data-val="90"  onclick="setLwTimer('vote',90)">90秒</button>
+            <button class="lw-tc-btn" data-val="120" onclick="setLwTimer('vote',120)">120秒</button>
+            <button class="lw-tc-btn" data-val="0"   onclick="setLwTimer('vote',0)">無制限</button>
+          </div>
+        </div>
+        <div class="lw-tc-row">
+          <span class="lw-tc-label">🐺 人狼行動フェーズ</span>
+          <div class="lw-tc-btns" id="tcb-lw-wolf">
+            <button class="lw-tc-btn" data-val="30"  onclick="setLwTimer('wolf',30)">30秒</button>
+            <button class="lw-tc-btn sel" data-val="60" onclick="setLwTimer('wolf',60)">60秒</button>
+            <button class="lw-tc-btn" data-val="90"  onclick="setLwTimer('wolf',90)">90秒</button>
+            <button class="lw-tc-btn" data-val="120" onclick="setLwTimer('wolf',120)">120秒</button>
+            <button class="lw-tc-btn" data-val="0"   onclick="setLwTimer('wolf',0)">無制限</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 非ホスト向けタイム表示 -->
+    <div id="rs-time-view" style="display:none">
+      <div class="rs-mode-label">⏱️ タイムリミット設定</div>
+      <div id="rs-time-view-text" class="lw-tc-view-text"></div>
+    </div>
+
+    <!-- 非ホスト向け対戦形式・脱落設定表示 -->
+    <div id="rs-mode-view" style="display:none">
+      <div class="rs-mode-label">🎯 対戦形式</div>
+      <div id="rs-battle-view-text" class="rs-mode-view-text"></div>
+      <div class="rs-mode-label" style="margin-top:10px">☠️ 脱落設定</div>
+      <div id="rs-elim-view-text" class="rs-mode-view-text"></div>
+    </div>
+
+    <!-- 開始ボタン / 待機メッセージ -->
+    <button class="lb-btn lb-btn-primary lb-btn-big" id="btn-start" onclick="startGame()" style="display:none">▶ ゲーム開始</button>
+    <a href="javascript:void(0)" class="lb-back" onclick="backToRoomSetup()">← ルーム作成画面へ戻る</a>
+    <div class="rs-waiting" id="waiting-msg">ホストがゲームを開始するまでお待ちください</div>
+    <div id="room-err" class="lw-err" style="margin-top:8px;text-align:center"></div>
+  </div>
+</div>
+
+<!-- ゲーム画面 -->
+<div id="s-game" class="screen" style="display:none">
+  <!-- ヘッダー（共通・フェーズで色とタイマーが変わる） -->
+  <div class="game-header" id="lw-game-header">
+    <div class="gh-left">
+      <div class="gh-role-badge" id="gh-role-badge" onclick="toggleLwRoleTooltip()" title="タップで役職説明を表示">❓ 役職</div>
+      <div class="gh-round-phase">
+        <span class="gh-round">ラウンド <span id="g-round">1</span></span>
+        <span class="gh-phase" id="g-phase">🎲 移動フェーズ</span>
+      </div>
+    </div>
+    <div class="gh-timer" id="gh-timer-box" style="display:none">
+      <span id="gh-timer-text">--</span>
+      <div class="gh-timer-bar-wrap"><div id="gh-timer-bar-fill" class="gh-timer-bar-fill"></div></div>
+    </div>
+    <div class="gh-center">
+      <span class="gh-turn" id="gh-turn-wrap">手番: <span id="g-turn-name">——</span></span>
+    </div>
+    <div class="gh-right">
+      <div class="gh-right-top">
+        <span class="gh-rule-chip" id="gh-battle-chip">🐺 陣営戦</span>
+        <span class="gh-rule-chip" id="gh-elim-chip">🔴 脱落あり</span>
+        <span class="gh-rule-chip gh-inventory-chip" id="gh-inventory-chip" onclick="toggleShopModal('inventory')">🧳 持ち物</span>
+        <span class="gh-myasset">💰 <span id="g-my-asset">1,000,000</span>円</span>
+        <div id="lw-host-btns" class="lw-host-btns" style="display:none">
+          <button id="lw-btn-ability-done" class="lw-hbtn lw-hbtn-ability" style="display:none" onclick="lwHostFinishAbility()">🧠 会議へ</button>
+          <button id="lw-btn-council-done" class="lw-hbtn lw-hbtn-council" style="display:none" onclick="lwHostFinishCouncil()">💬 投票へ</button>
+          <button id="lw-btn-vote-done"    class="lw-hbtn lw-hbtn-vote"    style="display:none" onclick="lwHostFinishVote()">⚖️ 投票確定</button>
+          <button id="lw-btn-wolf-done"    class="lw-hbtn lw-hbtn-wolf"    style="display:none" onclick="lwHostFinishWolfAction()">🐺 次ラウンドへ</button>
+        </div>
+      </div>
+      <div class="gh-shop-btns" id="gh-shop-btns" style="display:none">
+        <button class="gh-shop-btn" onclick="toggleShopModal('black')">🕶️ 闇市場</button>
+        <button class="gh-shop-btn" onclick="toggleShopModal('item')">🎒 アイテム</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ショップ モーダル（闇市場／アイテム。ヘッダーのボタンで開閉） -->
+  <div class="lw-shop-modal" id="lw-shop-modal" style="display:none"></div>
+
+  <!-- ① 移動フェーズ画面（ボード表示） -->
+  <div class="game-main" id="lw-view-board">
+    <!-- ボード -->
+    <div class="board-area">
+      <div id="lw-board" class="lw-board"></div>
+    </div>
+
+    <!-- 右パネル -->
+    <div class="side-panel">
+      <!-- プレイヤー一覧 -->
+      <div class="sp-card">
+        <div class="card-title">👥 プレイヤー</div>
+        <div id="g-player-list"></div>
+      </div>
+
+      <!-- アクションパネル -->
+      <div class="sp-card sp-action" id="g-action">
+        <div class="action-idle">⏳ 他のプレイヤーの手番です…</div>
+      </div>
+
+      <!-- ゲームログ -->
+      <div class="sp-card sp-log">
+        <div class="card-title">📋 ログ</div>
+        <div id="g-log"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② フェーズ画面（能力・会議・投票：人狼ONLINE風レイアウト） -->
+  <div class="game-main lwp-main" id="lw-view-phase" style="display:none">
+    <div class="lwp-players" id="lwp-players">
+      <h3>👥 プレイヤー</h3>
+      <div id="lwp-player-list"></div>
+    </div>
+    <div class="lwp-right">
+      <div class="lwp-action" id="lwp-action"></div>
+      <div class="lwp-chat-area">
+        <div class="lwp-chat-messages" id="lwp-chat-messages"></div>
+        <div class="lwp-chat-note" id="lwp-chat-note" style="display:none"></div>
+        <div class="lwp-chat-row" id="lwp-chat-row">
+          <input id="lwp-chat-input" class="lwp-chat-input" placeholder="メッセージ…" onkeydown="if(event.key==='Enter')sendPhaseChat()">
+          <button class="lwp-chat-send" onclick="sendPhaseChat()">送信</button>
+        </div>
+      </div>
+      <div class="lwp-log" id="lwp-log"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 役職確認モーダル ===== -->
+<div id="role-modal" class="role-modal-wrap" style="display:none">
+  <div class="role-modal-overlay">
+    <div class="role-modal-card" id="role-modal-card">
+      <div class="rmc-header">あなたの役職</div>
+
+      <div class="rmc-icon" id="rmc-icon">👤</div>
+      <div class="rmc-name" id="rmc-name">市民</div>
+      <div class="rmc-team" id="rmc-team">市民陣営</div>
+      <div class="rmc-desc" id="rmc-desc"></div>
+
+      <div class="rmc-ability" id="rmc-ability" style="display:none">
+        <div class="rmc-ability-title">🎯 役職能力</div>
+        <div class="rmc-ability-name" id="rmc-ability-name"></div>
+        <div class="rmc-ability-desc" id="rmc-ability-desc"></div>
+      </div>
+
+      <div class="rmc-allies" id="rmc-allies" style="display:none">
+        🐺 仲間の人狼：<b id="rmc-allies-names"></b>
+      </div>
+
+      <div class="rmc-warning">⚠️ この画面は自分だけに見えています</div>
+
+      <button class="rmc-btn" id="rmc-btn" onclick="confirmRole()">✅ 役職を確認しました</button>
+
+      <div class="rmc-progress" id="rmc-progress">
+        他のプレイヤーの確認を待っています…
+      </div>
+
+      <div class="rmc-timer">
+        <span id="rmc-timer-text">自動開始まで</span>
+        <span class="rmc-timer-count" id="rmc-timer-count">15</span>
+        <span id="rmc-timer-text2">秒</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ルール確認モーダル（役職確認の次に表示） ===== -->
+<div id="rules-modal" class="role-modal-wrap" style="display:none">
+  <div class="role-modal-overlay">
+    <div class="role-modal-card" id="rules-modal-card">
+      <div class="rmc-header">今回のルール</div>
+
+      <div class="rules-row">
+        <div class="rules-row-icon">🎯</div>
+        <div class="rules-row-body">
+          <div class="rules-row-title" id="rules-battle-title">対戦形式：陣営戦</div>
+          <div class="rules-row-desc" id="rules-battle-desc"></div>
+        </div>
+      </div>
+
+      <div class="rules-row">
+        <div class="rules-row-icon">☠️</div>
+        <div class="rules-row-body">
+          <div class="rules-row-title" id="rules-elim-title">脱落設定：あり</div>
+          <div class="rules-row-desc" id="rules-elim-desc"></div>
+        </div>
+      </div>
+
+      <button class="rmc-btn" onclick="confirmRules()">▶ ゲームを始める</button>
+    </div>
+  </div>
+</div>
+
+<!-- 役職説明ツールチップ（ゲーム中いつでもタップで確認可能） -->
+<div id="lw-role-tooltip" class="lw-role-tooltip">
+  <div class="lw-rt-header">
+    <span id="lw-rt-icon" class="lw-rt-icon"></span>
+    <div>
+      <div id="lw-rt-name" class="lw-rt-name"></div>
+      <div id="lw-rt-team" class="lw-rt-team"></div>
+    </div>
+    <button class="lw-rt-close" onclick="toggleLwRoleTooltip()">✕</button>
+  </div>
+  <div id="lw-rt-ability" class="lw-rt-ability-name"></div>
+  <div id="lw-rt-desc" class="lw-rt-desc"></div>
+  <!-- 占い師・探偵：結果メモも表示 -->
+  <div id="lw-rt-memo" class="lw-rt-memo" style="display:none">
+    <div id="lw-rt-memo-label" class="lw-rt-memo-label"></div>
+    <div id="lw-rt-memo-list"></div>
+  </div>
+</div>
+
+<!-- ===== ゲーム終了モーダル ===== -->
+<div id="gameover-modal" class="role-modal-wrap" style="display:none">
+  <div class="role-modal-overlay">
+    <div class="role-modal-card gameover-card">
+      <div class="rmc-header">🏆 ゲーム終了 — 最終結果</div>
+      <div id="gameover-list"></div>
+      <button class="rmc-btn" onclick="location.reload()">🔁 ロビーに戻る</button>
+    </div>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="lifeWolf.js"></script>
+</body>
+</html>

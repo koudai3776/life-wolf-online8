@@ -1,0 +1,290 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-tap-highlight-color:transparent}
+body{background:#0d0f1a;color:#e8eaf0;font-family:'Segoe UI','Hiragino Sans','Yu Gothic UI',sans-serif;min-height:100vh;min-height:100dvh;overflow-x:hidden}
+button{cursor:pointer;font-family:inherit;touch-action:manipulation}input{font-family:inherit}
+.screen{display:none}.screen.active{display:block}
+#s-game.active{display:flex}
+
+/* ── ログイン画面：LIFE WOLFと同じ、画面中央に縦積みのレイアウト ── */
+#s-login.active{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;min-height:100dvh;padding:24px 16px;
+}
+.wf-logo{font-size:32px;font-weight:900;letter-spacing:2px;margin-bottom:16px;text-align:center}
+.top-back-link{
+  display:block;text-align:center;font-size:16px;
+  color:#4050a0;margin-bottom:20px;text-decoration:none;
+}
+.top-back-link:hover{color:#7080c0}
+
+/* ── カード ── */
+.card{max-width:540px;margin:44px auto;background:#161828;border-radius:16px;padding:34px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.card h1{font-size:26px;margin-bottom:20px}.card h2{font-size:20px;margin-bottom:16px}
+#s-login.active .card{margin:0 auto}
+
+/* ── 入力 / ボタン ── */
+.inp{width:100%;padding:11px 14px;margin:6px 0;background:#0a0c18;border:2px solid #252840;border-radius:9px;color:#e8eaf0;font-size:15px;outline:none;transition:border-color .2s}
+.inp:focus{border-color:#5577ee}
+.btn{display:block;width:100%;padding:12px;margin:7px 0;border:none;border-radius:9px;font-size:15px;font-weight:600;transition:filter .15s,transform .1s}
+.btn:active{transform:scale(.97)}.btn:hover{filter:brightness(1.1)}
+.btn-blue{background:#3b6ee8;color:#fff}.btn-gray{background:#252840;color:#b0bcd8}.btn-green{background:#1d8c47;color:#fff}
+.btn-sm{display:inline-block;width:auto;padding:6px 13px;font-size:13px;margin:3px}
+.err{color:#e05050;font-size:13px;min-height:20px;margin:5px 0}
+
+/* ── ロビー ── */
+#lobby-room-banner{background:#0a0c18;border:1px solid #252840;border-radius:9px;padding:11px;margin-bottom:14px;font-size:13px;color:#7888a8}
+#lobby-room-banner span{font-size:28px;font-weight:700;color:#5577ee;letter-spacing:4px}
+.lobby-player{display:flex;align-items:center;gap:9px;padding:9px 12px;margin:5px 0;background:#111528;border-radius:8px;font-size:14px}
+#lobby-btn-row{display:flex;gap:8px;margin-top:12px}
+#lobby-btn-row .btn{margin:0}
+
+/* ── 役職設定パネル ── */
+#role-config{margin-top:16px;text-align:left}
+#role-config-toggle{background:#1a1d35;border:1px solid #303560;color:#a0b0d0;border-radius:8px;padding:8px 16px;font-size:14px;width:100%}
+#role-config-toggle:hover{background:#22274a}
+#role-config-body{display:none;margin-top:10px}
+#role-config-body.open{display:block}
+.role-summary{display:flex;align-items:center;justify-content:space-between;background:#0a0c18;border-radius:8px;padding:9px 13px;margin-bottom:10px;font-size:13px}
+.ok{color:#40d070}.ng{color:#e05050}
+.preset-btns{display:flex;gap:6px;flex-wrap:wrap}
+
+.team-section{margin-bottom:14px}
+.team-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;padding:4px 8px;border-radius:5px}
+.team-village{background:rgba(40,160,80,.15);color:#60e890}
+.team-wolf{background:rgba(200,50,50,.15);color:#ff7070}
+.team-fox{background:rgba(220,150,30,.15);color:#ffcc55}
+.team-other{background:rgba(120,70,200,.15);color:#cc99ff}
+.team-lover{background:rgba(220,60,120,.15);color:#ff8fc0}
+.role-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:7px}
+.role-card{background:#111528;border:1px solid #252840;border-radius:9px;padding:9px 11px}
+.role-card-top{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.role-card-icon{font-size:19px;flex-shrink:0}.role-card-name{font-size:13px;font-weight:700;flex:1}
+.role-card-desc{font-size:11px;color:#7888a8;line-height:1.5;margin-bottom:7px}
+.role-card-ctrl{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.role-card-ctrl button{width:26px;height:26px;border:none;border-radius:6px;background:#252840;color:#e0e8ff;font-size:16px;font-weight:700;line-height:1}
+.role-card-ctrl button:hover{background:#3b4060}
+.role-card-count{font-size:16px;font-weight:700;min-width:22px;text-align:center;color:#e0e8ff}
+
+/* ── タイマー設定 ── */
+#timer-config{margin-top:14px;background:#0a0c18;border-radius:9px;padding:12px 14px}
+#info-mode-config{margin-top:10px;background:#0a0c18;border-radius:9px;padding:12px 14px}
+.im-hint{font-size:11px;color:#5060a0;margin-top:6px;padding-left:2px}
+.tc-title{font-size:12px;font-weight:700;color:#7888a8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.tc-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.tc-label{font-size:13px;min-width:70px;flex-shrink:0}
+.tc-btns{display:flex;gap:5px;flex-wrap:wrap}
+.tc-btn{padding:4px 10px;background:#1a1d35;border:1px solid #303560;border-radius:6px;color:#8898b8;font-size:12px;transition:all .15s}
+.tc-btn:hover{background:#252840;color:#c0d0f0}
+.tc-btn.sel{background:#3b4e8a;border-color:#5577ee;color:#e0e8ff;font-weight:700}
+
+/* ── ゲーム画面 ── */
+#s-game{flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+#game-header{display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:2px solid #252840;flex-shrink:0;min-height:56px;transition:background .5s,border-color .5s}
+#game-header.night  {background:#0e0622;border-color:#6e2888}
+#game-header.discuss{background:#001520;border-color:#006080}
+#game-header.vote   {background:#1a0f00;border-color:#b07000}
+
+#role-badge{padding:5px 13px;border-radius:20px;font-weight:700;font-size:13px;white-space:nowrap;flex-shrink:0}
+.b-village{background:rgba(50,180,90,.12);border:1px solid #32b45a;color:#70e890}
+.b-wolf{background:rgba(200,50,50,.12);border:1px solid #c03030;color:#ff7070}
+.b-fox{background:rgba(220,150,30,.12);border:1px solid #dc9620;color:#ffc050}
+.b-other{background:rgba(120,70,200,.12);border:1px solid #7846c8;color:#cc99ff}
+.b-lover{background:rgba(220,60,120,.12);border:1px solid #dc3c78;color:#ff8fc0}
+
+#phase-label{font-size:17px;font-weight:700;white-space:nowrap}
+#phase-label.night  {color:#b060d0}
+#phase-label.discuss{color:#30c0e0}
+#phase-label.vote   {color:#f5a020}
+
+/* ── タイマー表示 ── */
+#timer-box{display:none;align-items:center;gap:8px;flex-shrink:0}
+#timer-text{font-size:20px;font-weight:700;min-width:52px;text-align:right;font-variant-numeric:tabular-nums}
+#timer-bar-wrap{width:90px;height:7px;background:#1a1d35;border-radius:4px;overflow:hidden}
+#timer-bar-fill{height:100%;border-radius:4px;transition:width .4s linear,background .4s}
+
+#host-btns{margin-left:auto;display:flex;gap:7px;flex-shrink:0}
+.hbtn{padding:7px 13px;border:none;border-radius:8px;font-size:13px;font-weight:600;display:none}
+.hbtn:hover{filter:brightness(1.15)}
+#btn-fn{background:#6e2888;color:#fff}   /* 夜終了 */
+#btn-fd{background:#006080;color:#fff}   /* 議論終了 */
+#btn-fv{background:#b07000;color:#fff}   /* 投票確定 */
+
+/* ── メインエリア ── */
+#game-main{display:flex;flex:1;overflow:hidden}
+#players-panel{width:36%;min-width:200px;background:#10132a;overflow-y:auto;padding:11px;border-right:1px solid #1c2040;flex-shrink:0}
+#players-panel h3{font-size:11px;color:#5060a0;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.pc{display:flex;align-items:center;gap:7px;padding:8px 10px;margin-bottom:5px;background:#181c38;border:2px solid transparent;border-radius:9px}
+.pc.dead{opacity:.35;background:#0d0f1a}.pc.me{border-color:#5577ee}
+.pc-icon{font-size:17px;flex-shrink:0}
+.pc-name{flex:1;font-size:13px;font-weight:600}.pc-name.dn{text-decoration:line-through}
+.pc-tag{font-size:10px;color:#7080a0;display:block}
+.pb{padding:4px 9px;border:none;border-radius:6px;font-size:11px;font-weight:600;background:#22274a;color:#b0c0f0;white-space:nowrap}
+.pb:hover{background:#2d3460}
+.pb.sel-wolf{background:#7a1818;color:#ffaaaa}
+.pb.sel-seer{background:#581888;color:#e0aaff}
+.pb.sel-guard{background:#185e2a;color:#aaffcc}
+.pb.sel-vote{background:#185e3a;color:#aaffcc}
+.pb.acc{background:#884400;color:#ffdd88}
+.vbadge{display:inline-block;background:#c03030;color:#fff;font-size:11px;font-weight:700;border-radius:4px;padding:1px 5px;margin-left:3px}
+
+/* ── 右パネル ── */
+#right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#action-panel{padding:12px 15px;background:#0b0e1e;border-bottom:1px solid #1c2040;flex-shrink:0;min-height:85px}
+.ap-title{font-size:14px;font-weight:700;margin-bottom:7px}
+.ap-wolf{color:#e05050}.ap-seer{color:#b060e0}.ap-guard{color:#40c070}
+.ap-medium{color:#5090e0}.ap-day{color:#e0a030}.ap-discuss{color:#30c0e0}.ap-other{color:#a0b8d8}
+.ap-info{font-size:12px;color:#6070a0;margin:3px 0}
+.ap-status{font-size:13px;color:#9090b0;margin:5px 0}
+.ap-allies{font-size:12px;color:#ff8888;margin:4px 0}
+.seer-row{font-size:12px;margin:3px 0}
+.seer-wolf{color:#ff7070}.seer-vill{color:#70e890}.seer-fox{color:#ffcc55}
+.team-reveal-box{background:#111528;border:1px solid #252840;border-radius:8px;padding:7px 11px;font-size:12px;margin:5px 0;color:#a0b8d8}
+
+/* ── チャット ── */
+#chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#chat-messages{flex:1;overflow-y:auto;padding:9px 13px;background:#090c1a}
+.cm{padding:3px 0;font-size:13px;line-height:1.5}
+.rsb-row{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+  font-size:14px;font-weight:600;line-height:1.6;
+  padding:3px 8px;margin:1px -8px;border-radius:6px;cursor:pointer;
+  transition:background .12s;
+}
+.rsb-row:hover{background:rgba(255,255,255,.06)}
+.rsb-info{font-size:11px;opacity:.45;flex-shrink:0}
+.cm.wolf-chat{color:#ff8888}
+.cm.sys{color:#4477aa;font-style:italic}
+#reaction-bar{display:flex;gap:6px;padding:6px 9px 0;background:#10132a;flex-shrink:0}
+.rxn-btn{
+  flex:1;padding:6px 0;border:none;border-radius:8px;
+  background:#1c2040;font-size:18px;line-height:1;
+  transition:background .15s,transform .1s;
+}
+.rxn-btn:hover{background:#2a3060}
+.rxn-btn:active{transform:scale(.88)}
+.rxn-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.rxn-pop{display:inline-block;animation:rxnPop .35s ease}
+@keyframes rxnPop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1);opacity:1}}
+#chat-row{display:flex;padding:7px 9px;gap:7px;background:#10132a;border-top:1px solid #1c2040;flex-shrink:0}
+/* 観戦チャット（死亡者専用） */
+#spec-bar{display:flex;flex-direction:column;border-top:1px solid #2a1a2a;flex-shrink:0}
+#spec-messages{max-height:90px;overflow-y:auto;padding:5px 10px;background:#0d0a14}
+#spec-messages:empty{display:none}
+.spec-msg{font-size:12px;color:#7a6a8a;padding:2px 0;line-height:1.4}
+.spec-msg .spec-name{color:#9a7ab0;font-weight:600}
+#spec-row{display:flex;padding:5px 9px;gap:7px;background:#0d0a14}
+#spec-input{flex:1;background:#170f20;border:1px solid #2e1f40;border-radius:6px;color:#9a8aaa;padding:5px 9px;font-size:12px;outline:none}
+#spec-input::placeholder{color:#4a3a5a}
+#btn-spec{padding:5px 12px;background:#2e1f40;border:none;border-radius:6px;color:#9a8aaa;font-size:12px;cursor:pointer}
+#btn-spec:hover{background:#3e2f54}
+#chat-input{flex:1;padding:8px 12px;background:#090c1a;border:1px solid #252840;border-radius:7px;color:#e8eaf0;font-size:13px;outline:none}
+#chat-input:focus{border-color:#5577ee}
+#chat-input:disabled{opacity:.4}
+#btn-send{padding:8px 16px;background:#3b6ee8;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:600}
+#btn-send:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── ログ ── */
+#log-area{height:115px;overflow-y:auto;padding:6px 12px;background:#070911;border-top:1px solid #1c2040;flex-shrink:0}
+.le{font-size:12px;color:#6070a0;padding:2px 0;border-bottom:1px solid #10132a;line-height:1.5}
+.le.kill{color:#e06060}.le.exec{color:#e0a030}.le.sys{color:#5577bb}.le.guard-ok{color:#40c070;font-weight:700}
+
+/* ── ゲームオーバー ── */
+#winner-banner{font-size:32px;font-weight:700;margin-bottom:6px}
+.wv{color:#50d870}.ww{color:#ff5050}.wf{color:#ffcc50}.wo{color:#cc99ff}.wlv{color:#ff8fc0}
+.rt{width:100%;border-collapse:collapse;margin:15px 0;font-size:13px}
+.rt th,.rt td{padding:8px 10px;border:1px solid #252840;text-align:center}
+.rt th{background:#111528;color:#7080a0}
+.row-wolf td{color:#ff8080}.row-village td{color:#90e8a0}.row-fox td{color:#ffcc77}.row-other td{color:#cc99ff}.row-lover td{color:#ff8fc0}
+
+/* ── 役職説明ツールチップ ── */
+.role-tooltip{display:none;position:fixed;top:64px;left:10px;z-index:50;
+  background:#1a1d35;border:1px solid #5577ee;border-radius:12px;padding:16px 20px;
+  max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+
+/* ══════════════════════════════════════════
+   📱 スマホ・タブレット対応
+══════════════════════════════════════════ */
+@media (max-width:768px){
+
+  /* カード（ログイン・ロビー・ゲームオーバー） */
+  .card{max-width:100%;margin:18px auto;padding:22px 18px;border-radius:13px}
+  .card h1{font-size:22px;margin-bottom:16px}
+  .card h2{font-size:18px;margin-bottom:13px}
+  .inp{font-size:16px} /* iOS自動ズーム防止（16px未満だと発生） */
+
+  #lobby-room-banner span{font-size:24px;letter-spacing:2px}
+
+  .role-cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .role-card-ctrl button{width:32px;height:32px;font-size:18px}
+
+  .tc-row{gap:7px}
+  .tc-btn{padding:6px 11px;font-size:12px}
+
+  /* ── ゲーム画面ヘッダー：折り返し可能に ── */
+  #game-header{flex-wrap:wrap;gap:8px;padding:8px 10px;min-height:auto}
+  #role-badge{font-size:12px;padding:4px 10px}
+  #phase-label{font-size:14px}
+  #timer-text{font-size:16px;min-width:42px}
+  #timer-bar-wrap{width:60px}
+  #host-btns{margin-left:0;width:100%;justify-content:flex-end;order:3}
+  .hbtn{padding:8px 14px;font-size:13px}
+
+  /* ── メインエリア：縦並びに変更 ── */
+  #game-main{flex-direction:column}
+  #players-panel{
+    width:100%;min-width:0;max-height:30vh;
+    border-right:none;border-bottom:1px solid #1c2040;
+    padding:9px;
+  }
+  #players-panel h3{margin-bottom:6px}
+  #right-panel{flex:1;min-height:0}
+
+  /* プレイヤーカード：ボタンが収まらない場合は折り返し */
+  .pc{flex-wrap:wrap;padding:7px 9px}
+  .pb{padding:7px 11px;font-size:12px}
+
+  /* ── アクションパネル／ログ：高さを圧縮してチャット領域を確保 ── */
+  #action-panel{min-height:auto;padding:10px 12px}
+  .ap-title{font-size:13px}
+  .ap-info,.ap-status{font-size:12px}
+  #log-area{height:80px}
+  .le{font-size:11px}
+
+  /* リアクションバー：タップしやすく */
+  .rxn-btn{padding:9px 0;font-size:20px}
+
+  /* チャット：タッチしやすいサイズに（16pxはiOS自動ズーム防止のため） */
+  #chat-input{padding:10px 12px;font-size:16px}
+  #btn-send{padding:10px 16px;font-size:13px}
+
+  /* 役職ツールチップ：画面幅に収まるように */
+  .role-tooltip{
+    left:8px; right:8px; top:auto; bottom:8px;
+    max-width:none; width:auto;
+  }
+
+  /* ゲームオーバー結果表 */
+  .rt{font-size:12px}
+  .rt th,.rt td{padding:6px 6px}
+}
+
+/* ── さらに小さい画面（小型スマホ） ── */
+@media (max-width:380px){
+  .card{padding:16px 12px}
+  #lobby-room-banner span{font-size:20px}
+  #role-badge{font-size:11px;padding:3px 8px}
+  #phase-label{font-size:13px}
+  #timer-box{gap:5px}
+  #timer-bar-wrap{width:44px}
+  .pc-name{font-size:12px}
+  .pb{padding:6px 9px;font-size:11px}
+  #players-panel{max-height:26vh}
+  #log-area{height:64px}
+}
+
+/* 横向き（landscape）：高さが狭い場合はログ領域をさらに圧縮 */
+@media (max-height:480px) and (orientation:landscape){
+  #players-panel{max-height:38vh}
+  #log-area{height:50px}
+  #action-panel{padding:6px 12px;min-height:auto}
+}

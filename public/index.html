@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LIFE WOLF - GAME COLLECTION</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#06080f;
+  color:#c0cce0;
+  font-family:'Segoe UI',system-ui,sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* ===== 背景 ===== */
+.bg{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse at 70% 10%, #0d1a3a 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, #1a0d2a 0%, transparent 50%),
+    #06080f;
+}
+/* 星 */
+.stars{
+  position:fixed;inset:0;z-index:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 15%, #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 25% 35%, #aac 0%, transparent 100%),
+    radial-gradient(2px   2px   at 40% 5%,  #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 55% 60%, #aac 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 20%, #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 75% 45%, #aac 0%, transparent 100%),
+    radial-gradient(2px   2px   at 85% 10%, #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 90% 70%, #aac 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 15% 55%, #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 30% 80%, #aac 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 90%, #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 70% 85%, #aac 0%, transparent 100%),
+    radial-gradient(2px   2px   at 5%  40%, #fff 0%, transparent 100%),
+    radial-gradient(1px   1px   at 95% 30%, #aac 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 45% 50%, rgba(200,220,255,.4) 0%, transparent 100%);
+}
+/* パーティクル */
+.particle{
+  position:fixed;z-index:0;
+  border-radius:50%;
+  animation:rise linear infinite;
+  opacity:0;
+}
+@keyframes rise{
+  0%  {transform:translateY(100vh) scale(0);opacity:0}
+  10% {opacity:.6}
+  90% {opacity:.2}
+  100%{transform:translateY(-10vh) scale(1);opacity:0}
+}
+
+/* ===== レイアウト ===== */
+.hub{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding:48px 20px 32px;
+}
+
+/* ===== ヘッダー ===== */
+.hub-header{text-align:center;margin-bottom:48px}
+.logo-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.logo-icon{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,#ff6633,#dd2299,#8833ee);
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;
+}
+.logo-text{
+  font-size:52px;font-weight:900;letter-spacing:4px;
+  background:linear-gradient(135deg,#ff8833 0%,#ee44aa 50%,#9944ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.collection-label{
+  font-size:12px;letter-spacing:4px;color:#3a4880;
+  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+  font-weight:600;
+}
+.collection-label::before,.collection-label::after{
+  content:'';display:block;width:40px;height:1px;
+  background:linear-gradient(90deg,transparent,#3a4880);
+}
+.collection-label::after{transform:scaleX(-1)}
+.hub-sub{font-size:14px;color:#5060a0;letter-spacing:1px}
+
+/* ===== カード ===== */
+.cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  width:100%;max-width:860px;
+  margin-bottom:40px;
+}
+.card{
+  background:rgba(8,10,28,.8);
+  border-radius:16px;
+  padding:36px 28px 28px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .2s, box-shadow .2s;
+  position:relative;overflow:hidden;
+  border:1px solid transparent;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:16px;
+  background:inherit;z-index:-1;
+}
+/* 背景テクスチャ */
+.card-wolf{
+  border-color:#1a3a7a;
+  box-shadow:0 0 0 1px #1a3a7a, 0 0 40px #1133aa22, inset 0 0 60px #0a1a3a18;
+  background:
+    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 80 L50 20 L80 80' fill='none' stroke='rgba(30,60,120,.08)' stroke-width='1'/%3E%3C/svg%3E") repeat,
+    rgba(7,12,28,.9);
+}
+.card-life{
+  border-color:#4a1a5a;
+  box-shadow:0 0 0 1px #4a1a5a, 0 0 40px #cc228822, inset 0 0 60px #1a0a2818;
+  background:
+    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' fill='none' stroke='rgba(180,40,120,.06)' stroke-width='1'/%3E%3C/svg%3E") repeat,
+    rgba(10,7,20,.9);
+}
+.card:hover{
+  transform:translateY(-6px);
+}
+.card-wolf:hover{box-shadow:0 0 0 1px #2244aa, 0 8px 40px #2244aa55, inset 0 0 60px #0a1a3a18}
+.card-life:hover{box-shadow:0 0 0 1px #882299, 0 8px 40px #88229955, inset 0 0 60px #1a0a2818}
+
+/* カードアイコン */
+.card-icon{font-size:56px;margin-bottom:16px;line-height:1;filter:drop-shadow(0 0 12px currentColor)}
+.card-wolf .card-icon{color:#4488ff;text-shadow:0 0 20px #4488ff}
+.card-life .hex-icon{
+  width:64px;height:64px;
+  background:linear-gradient(135deg,#ff6633,#dd2299);
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin-bottom:16px;
+  filter:drop-shadow(0 0 12px #dd229988);
+}
+/* カードテキスト */
+.card-title{font-size:26px;font-weight:800;color:#e8eeff;margin-bottom:4px}
+.card-wolf .card-title{color:#ddeeff}
+.card-life .card-title{color:#ffddee}
+.card-sub-label{font-size:11px;letter-spacing:3px;margin-bottom:18px;font-weight:600}
+.card-wolf .card-sub-label{color:#3366bb}
+.card-life .card-sub-label{color:#aa3388}
+.card-desc{font-size:13px;color:#5060a0;line-height:1.7;margin-bottom:24px;flex:1}
+
+/* カードボタン */
+.card-btn{
+  width:100%;padding:13px 20px;border:none;border-radius:10px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  margin-bottom:16px;transition:opacity .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.card-btn:hover{opacity:.9}
+.btn-wolf{background:linear-gradient(135deg,#2244cc,#4488ff);color:#fff}
+.btn-life{background:linear-gradient(135deg,#aa2288,#ee44bb);color:#fff}
+
+/* カード下部の情報 */
+.card-meta{
+  display:flex;gap:16px;font-size:11px;color:#3a4060;
+  border-top:1px solid #1a1f40;padding-top:14px;width:100%;
+  justify-content:center;
+}
+.card-meta span{display:flex;align-items:center;gap:4px}
+
+/* ===== ボトムナビ ===== */
+.bottom-nav{
+  display:flex;gap:12px;
+}
+.nav-btn{
+  padding:10px 24px;
+  background:rgba(255,255,255,.04);
+  border:1px solid #1a1f40;
+  border-radius:30px;
+  color:#4a5070;
+  font-size:13px;cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;gap:6px;
+}
+.nav-btn:hover{background:rgba(255,255,255,.08);color:#7080a0;border-color:#2a3060}
+
+/* ===== レスポンシブ ===== */
+@media(max-width:640px){
+  .cards{grid-template-columns:1fr}
+  .logo-text{font-size:36px}
+  .logo-icon{width:40px;height:40px;font-size:20px}
+  .hub{padding:32px 14px 24px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="stars"></div>
+
+<!-- パーティクル -->
+<div class="particle" style="left:15%;width:4px;height:4px;background:#4488ff55;animation-duration:8s;animation-delay:0s"></div>
+<div class="particle" style="left:30%;width:3px;height:3px;background:#aa44ff55;animation-duration:11s;animation-delay:2s"></div>
+<div class="particle" style="left:50%;width:5px;height:5px;background:#ff668844;animation-duration:9s;animation-delay:1s"></div>
+<div class="particle" style="left:70%;width:3px;height:3px;background:#4488ff44;animation-duration:13s;animation-delay:3s"></div>
+<div class="particle" style="left:85%;width:4px;height:4px;background:#ee44aa44;animation-duration:10s;animation-delay:0.5s"></div>
+<div class="particle" style="left:8%;width:3px;height:3px;background:#8844ff44;animation-duration:12s;animation-delay:4s"></div>
+<div class="particle" style="left:60%;width:4px;height:4px;background:#4499ff44;animation-duration:7s;animation-delay:1.5s"></div>
+
+<div class="hub">
+  <!-- ヘッダー -->
+  <header class="hub-header">
+    <div class="logo-wrap">
+      <div class="logo-icon">🐺</div>
+      <div class="logo-text">LIFE WOLF</div>
+    </div>
+    <div class="collection-label">GAME COLLECTION</div>
+    <p class="hub-sub">遊びたいゲームを選択してください</p>
+  </header>
+
+  <!-- ゲームカード -->
+  <div class="cards">
+
+    <!-- 人狼 ONLINE -->
+    <div class="card card-wolf" onclick="location.href='/werewolf.html'">
+      <div class="card-icon">🐺</div>
+      <h2 class="card-title">人狼 ONLINE</h2>
+      <div class="card-sub-label">JINROU ONLINE</div>
+      <p class="card-desc">オンラインで集まって、<br>推理と駆け引きを楽しもう。</p>
+      <button class="card-btn btn-wolf" onclick="event.stopPropagation();location.href='/werewolf.html'">
+        ゲームをはじめる &rsaquo;
+      </button>
+      <div class="card-meta">
+        <span>👥 4〜10人</span>
+        <span>📶 オンライン専用</span>
+      </div>
+    </div>
+
+    <!-- 人狼 × 人生ゲーム -->
+    <div class="card card-life" onclick="location.href='/lifeWolf.html'">
+      <div class="hex-icon">🎲</div>
+      <h2 class="card-title">人狼 × 人生ゲーム</h2>
+      <div class="card-sub-label">LIFE WOLF</div>
+      <p class="card-desc">人狼のスリルと人生ゲームの戦略。<br>運と戦略で勝ち抜け！</p>
+      <button class="card-btn btn-life" onclick="event.stopPropagation();location.href='/lifeWolf.html'">
+        ゲームをはじめる &rsaquo;
+      </button>
+      <div class="card-meta">
+        <span>👥 3〜6人</span>
+        <span>🎮 オンライン対応</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ボトムナビ -->
+  <nav class="bottom-nav">
+    <button class="nav-btn">👑 ランキング</button>
+    <button class="nav-btn">📖 遊び方</button>
+    <button class="nav-btn">⚙️ 設定</button>
+  </nav>
+</div>
+
+</body>
+</html>
