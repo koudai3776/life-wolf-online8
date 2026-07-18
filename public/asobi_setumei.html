@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>遊び方説明</title>
+</head>
+
+<!--cssのコード-->
+<style>
+body{
+    font-family: "Yu Gothic", sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:30px;
+}
+
+.container{
+    position:relative; /*「この要素を位置指定できる状態にする」**という意味*/
+    z-index:1; /*「前後関係（重なり順）」**を決めるもの*/
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+    font-size:52px;font-weight:900;letter-spacing:4px;
+    animation: fadein 2.0s ease 0s forwards;
+}
+
+.section{
+    margin-bottom:25px;
+}
+
+h2{
+    color:#3498db;
+    border-left:5px solid #3498db;
+    padding-left:10px;
+}
+
+h3{
+    color:#ff3422;
+}
+
+ul{
+    padding-left:25px;
+}
+
+li{
+    margin:8px 0;
+}
+
+.mura{
+    background:#caf7c7;
+    padding:15px;
+    border-radius:10px;
+}
+
+.jin{
+    background:#f7c6b0;
+    padding:15px;
+    border-radius:10px;
+}
+
+.note{
+    background:#fff8dc;
+    padding:15px;
+    border-radius:10px;
+}
+
+.daisan{
+    background:#e9c0f9;
+    padding:15px;
+    border-radius:10px;
+}
+
+.koi{
+    background:#ffcce4;
+    padding:15px;
+    border-radius:10px;
+}
+
+
+.tab-menu{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.tab{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#e0e6ef;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.2s;
+}
+
+.tab:hover{
+    background:#d0d7e0;
+}
+
+.tab.active{
+    background:#3498db;
+    color:white;
+}
+
+.tab-content{
+    display:none;
+}
+
+.tab-content.active{
+    display:block;
+}
+
+.back-btn{
+    margin-left:auto; /* 右端に寄せる */
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#ff7675;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.2s;
+}
+
+.back-btn:hover{
+    background:#ff6b6b;
+}
+
+.bg{
+    position:fixed;inset:0;z-index:0;
+    background:
+    radial-gradient(ellipse at 70% 10%, #0d1a3a 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, #1a0d2a 0%, transparent 50%),
+    #06080f;
+}
+
+.yoru-asa-touhyou{
+    color:#e84a00;
+}
+
+.mura-yaku{
+    color:#06bb06;
+}
+
+.jinrou-yaku{
+    color:#e62525;
+}
+
+.youko-yaku{
+    color:#b9b301;
+}
+
+.daisan-yaku{
+    color:#c316c6;
+}
+
+.koi-yaku{
+    color:#fc41ab;
+}
+
+.dice{
+    display:inline-block;
+    cursor:pointer;
+}
+
+.h1-color {
+    background:linear-gradient(135deg,#ff8833 0%,#ee44aa 50%,#9944ff 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.dice.roll{
+    animation:rollDice 0.6s ease;
+}
+
+.mode-tabs{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.mode-btn{
+    padding:10px 22px;
+    border:none;
+    border-radius:8px;
+    background:#ddd;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.mode-btn.active{
+    background:#3498db;
+    color:white;
+}
+
+#modeDescription{
+    padding:20px;
+    background:#eef6ff;
+    border-radius:12px;
+    line-height:1.8;
+}
+
+@keyframes fadein {
+    from { opacity: 0; transform: translateY(-10px);  }
+    to   {opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rollDice{
+    0%{
+        transform:rotate(0deg) scale(1);
+    }
+    20%{
+        transform:rotate(90deg) translateY(-8px) scale(1.1);
+    }
+    40%{
+        transform:rotate(180deg) translateY(0px) scale(0.95);
+    }
+    60%{
+        transform:rotate(270deg) translateY(-5px) scale(1.05);
+    }
+    80%{
+        transform:rotate(330deg) translateY(2px);
+    }
+    100%{
+        transform:rotate(360deg) scale(1);
+    }
+}
+</style>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+    <div class="tab-menu">
+        <button class="tab active" data-target="online">人狼 ONLINE</button>
+        <button class="tab" data-target="life">Life♥Wolf</button>
+        <button class="back-btn" onclick="closeGuide()">閉じる</button>
+    </div>
+
+    <h1>
+        <span class="dice">🎲</span><span class="h1-color">遊び方説明</span><span class="dice">🎲</span>
+    </h1>
+
+    <div id="online" class="tab-content active">
+    <!-- 今の遊び方説明の container をここに入れる -->
+        <div class="section">
+            <h2>🧠 ゲーム概要</h2>
+            <p>
+                『人狼ONLINE』は、オンラインで遊べる多人数人狼ゲームです。
+                昼は議論を行い、人狼を探します。夜になると各役職が能力を使用し、村人陣営・人狼陣営・妖狐陣営・第三陣営・恋人陣営がそれぞれの勝利条件を目指します。
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>👥 プレイ人数</h2>
+            <p>最低３人</p>
+            <p>最大∞人</p>
+        </div>
+
+        <div class="section">
+            <h2>ゲーム開始</h2>
+            <ol>
+                <li>名前を入力</li>
+                <li>ルームを作成</li>
+                <li>またはルームIDを入力して参加</li>
+                <li>ホストが役職を設定</li>
+                <li>ゲーム開始</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>ゲームの流れ</h2>
+
+            <h3 class="yoru-asa-touhyou">🌙 夜</h3>
+            <p>各役職が能力を使います。</p>
+            <p>例：</p>
+
+                <ul>
+                    <li>人狼 → 襲撃</li>
+                    <li>占い師 → 占い</li>
+                    <li>狩人 → 護衛</li>
+                </ul>
+
+            <h3 class="yoru-asa-touhyou">☀️ 昼</h3>
+            <p>夜の結果が発表されます。全員で議論し、「誰が人狼か」を話し合います。</p> 
+
+            <h3 class="yoru-asa-touhyou">🗳️ 投票</h3>
+            <p>最も票を集めた人が処刑されます。役職によっては処刑時に特殊能力が発動します。</p>
+
+        </div>
+    
+        <div class="section">
+            <h2>🏆 勝利条件</h2>
+            <h3 class="mura-yaku">村人陣営</h3>
+            <p>
+                村人陣営の人数が、人狼陣営と同じになる前に、人狼を追放する。
+            </p>
+
+            <h3 class="jinrou-yaku">人狼陣営</h3>
+            <p>
+                村人陣営の人数を、人狼陣営の人数以下にする。
+            </p>
+
+            <h3 class="youko-yaku">妖狐陣営</h3>
+            <p>
+                最後まで生き残っていれば勝利となる。
+            </p>
+
+            <h3 class="daisan-yaku">第三陣営</h3>
+            <p>
+                条件達成で単独勝利。
+            </p>
+
+            <h3 class="koi-yaku">恋人陣営</h3>
+            <p>
+                ペアの人と生き残っていればどの陣営が生き残っていても勝利する。
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>👯 役職</h2>
+
+            <div class="mura">
+                <h3 class="mura-yaku">村人陣営</h3>
+                <ol>
+                    <li>🏘️ 村人・・・特殊能力を持たない一般の村人です。昼の議論を通して人狼を見つけ出しましょう。</li>
+                    <li>🔮 占い師・・・毎晩1人を占い、その人が人狼かどうかを調べられます。</li>
+                        <ul>
+                            <li>人狼 → 「人狼」と表示</li>
+                            <li>大狼・狂人・狂信者・妖狐 → 「人狼ではない」と表示</li>
+                            <li>妖狐を占うと、その妖狐は誰にも知られず死亡します。</li>
+                        </ul>
+                    <li>👁️ 霊媒師・・・昼の投票で処刑されたプレイヤーの本当の役職を知ることができます。結果は翌朝に届きます。</li>
+                    <li>🛡️ 狩人・・・毎晩1人を護衛できます。護衛したプレイヤーは、その夜の人狼の襲撃から守られます。</li>
+                    <li>⚔️ 騎士・・・ゲーム中に1回だけ昼に「断罪」を行えます。使いどころが重要な役職です。</li>
+                        <ul>
+                            <li>相手が人狼ならその場で倒します。</li>
+                            <li>相手が人狼以外なら、自分が死亡します。</li>
+                        </ul>
+                    <li>🐱 猫又・・・投票で処刑されると、自分に投票したプレイヤーの中からランダムで1人を道連れにします。</li>
+                    <li>🤝 共有者・・・ゲーム開始時から、お互いが共有者であることを知っています。村人陣営同士で確実に信用できる存在です。</li>
+                        <p>※2人以上設定してください。</p>
+                    <li>🧿 呪い師・・・人狼に襲撃されても死亡しません。代わりに人狼へ変身し、人狼陣営になります。人狼側は襲撃した相手が呪い師だったことを知ることはできません。</li>
+                    <li>💀 復讐者・・・投票で処刑されると、生きているプレイヤーの中からランダムで1人を道連れにします。</li>
+                    <li>👸 聖女・・・村人陣営ですが、とても重要な存在です。投票で処刑されるとその瞬間に人狼陣営の勝利になります。村人は絶対に処刑してはいけません。</li>
+                </ol>
+            </div>
+
+            <p></p>
+
+            <div class="jin">
+                <h3 class="jinrou-yaku">人狼陣営</h3>
+
+                <ol>
+                    <li>🐺 人狼・・・毎晩1人を襲撃できます。人狼同士はお互いの正体を知っています。</li>
+                    <li>🦁 大狼・・・強力な人狼です。能力は通常の人狼と同じですが、占い師には**「人狼ではない」**と判定されます。</li>
+                    <li>🐶 子狼・・・通常の人狼として行動します。子狼が死亡すると、その翌夜だけ人狼陣営は追加でもう1人襲撃できます。</li>
+                    <li>🤪 狂人・・・人狼陣営ですが、人狼が誰なのかは知りません。占い師には「人狼ではない」と判定されます。人狼陣営が勝利すれば自分も勝利です。</li>
+                    <li>😤 狂信者・・・人狼が誰なのかを最初から知っています。夜の能力はありませんが、人狼を支援する情報役として活躍します。占い師には「人狼ではない」と判定されます。</li>
+                </ol>
+            </div>
+
+            <p></p>
+
+            <div class="note">
+                <h3 class="youko-yaku">妖狐陣営</h3>
+
+                <ol>
+                    <li>🦊 妖狐・・・人狼に襲撃されても死亡しません。しかし占い師に占われると、その場で死亡します。ゲーム終了時に生き残っていれば勝利です。</li>
+                    <li>🎭 背徳者・・・妖狐陣営の協力者です。ゲーム開始時から妖狐が誰なのかを知っています。妖狐が勝利すれば、自分も勝利します。</li>
+                </ol>
+
+            </div>
+
+            <p></p>
+
+            <div class="daisan">
+                <h3 class="daisan-yaku">第三陣営</h3>
+
+                <ol>
+                    <li>🃏 ジョーカー・・・人狼に襲撃されると単独勝利します。投票で処刑されると負けです。</li>
+                    <li>⛩️ てるてる坊主・・・1日目の昼の投票で処刑されることが勝利条件です。それ以外の死に方では敗北になります。</li>
+                </ol>
+                
+            </div>    
+
+            <p></p>
+
+            <div class="koi">
+                <h3 class="koi-yaku">恋人陣営</h3>
+
+                <p>💕 恋人・・・ゲーム開始時に恋人同士がお互いを知っています。</p>
+                    <ul>
+                        <li>どちらか一方が死亡すると、もう一方も後を追って死亡します。</li>
+                        <li>ゲーム終了時に恋人2人が生き残っていれば、他陣営より優先して恋人陣営の勝利になります。</li>
+                    </ul>
+                <p>※2人以上設定してください。</p>
+                
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="life" class="tab-content">
+    <!-- ここにLife♥Wolf専用の説明を書く -->
+        <div class="section">
+            <h2>🧠 ゲーム概要</h2>
+            <p>
+                人生ゲーム風のマップを進みながら、
+                誰が人狼かを見抜きつつ資産を増やしていくボードゲームです。
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>👥 プレイ人数</h2>
+            <p>最低3人</p>
+            <p>最大8人</p>
+        </div>
+
+        <div class="section">
+            <h2>🎮 モード選択</h2>
+
+            <!-- 脱落 -->
+            <div class="mode-tabs">
+                <button class="mode-btn active" data-group="death" data-value="on">脱落あり</button>
+                <button class="mode-btn" data-group="death" data-value="off">脱落なし</button>
+            </div>
+
+            <!-- 勝利方式 -->
+            <div class="mode-tabs">
+                <button class="mode-btn active" data-group="battle" data-value="team">陣営戦</button>
+                <button class="mode-btn" data-group="battle" data-value="solo">個人戦</button>
+            </div>
+
+            <br>
+
+            <div id="modeDescription"></div>
+        </div>
+
+        <div class="section">
+            <h2>🏆 勝利条件</h2>
+            <p>
+                ゲーム終了時に最も資産を持っているプレイヤー、または、陣営が勝利します。
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>💰 資産について</h2>
+            <ul>
+                <li>資産は勝利スコアです。</li>
+                <li>資産額は自分のみ確認できます。</li>
+                <li>資産を増やしながら人狼を探しましょう。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🗺 マスの種類</h2>
+            <ul>
+                <li>💰 仕事マス（資産が変動）</li>
+                <li>🌍 社会イベントマス（全体に影響）</li>
+                <li>❓ ハプニングマス（マイナスイベント）</li>
+                <li>🎲 運命マス（ランダムイベント）</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🔁 ターンの流れ</h2>
+
+            <div class="flow">
+                <ol>
+                    <li>🎲 サイコロを振る</li>
+                    <li>🧩 止まったマスのイベントを処理</li>
+                    <li>📊 パラメータ更新</li>
+                    <li>🧠 役職能力を使用（1ターン1回）</li>
+                    <li>💬 会話フェーズ</li>
+                    <li>🗳️ 投票</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🗳 会議フェーズ</h2>
+            <ul>
+                <li>誰かが死亡した場合に発生します。</li>
+                <li>プレイヤー同士で話し合いを行います。</li>
+                <li>投票で追放者を決定します。</li>
+                <li>同票の場合はランダムで決定されます。</li>
+                <li>投票を行わないスキップも可能です。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+        <h2>👯 役職</h2>
+
+            <div class="mura">
+                <h3 class="mura-yaku">村人陣営</h3>
+                <ol>
+                    <li>👤 市民・・・特殊能力を持たない一般の村人です。昼の議論を通して人狼を見つけ出しましょう。</li>
+                    <li>🔮 占い師・・・毎晩1人を占い、その人が人狼かどうかを調べられます。（CT:2）</li>
+                    <li>🕵 探偵・・・現在の資産を調査できる</li>
+                    <li>⚖️ 弁護士・・・誰かを処刑（投票）から守れる（CT:2）</li>
+                    <li>👮 警備員・・・誰かを人狼の暗殺から守れる（CT:2）</li>
+                    <li>⛪ 神父・・・処刑された人の正体をこっそり教えてもらえる</li>
+                </ol>
+            </div>
+
+            <p></p>
+
+            <div class="jin">
+                <h3 class="jinrou-yaku">人狼陣営</h3>
+
+                <ol>
+                    <li>🐺 人狼・・・暗殺で資産を奪う（CT:2）</li>
+                    <li>🎭 詐欺師・・・占いの結果を「人狼ではない」に偽装できる（CT:2）</li>
+                    <li>🎰 ギャンブラー・・・50%で資産30%を奪い、50%で自分が15%失う（CT:2）</li>
+                    <li>🕶️ スパイ・・・占われても常に「人狼ではない」に見える（常時効果）</li>
+                </ol>
+            </div>
+
+            <p>＊人狼 ONLINEの場合のみ役職20個</p>
+        </div>
+
+        <div class="section">
+            <h2>⚙ 基本ルール</h2>
+
+            <div class="note">
+                <ul>
+                    <li>役職はランダムに配布されます。</li>
+                    <li>マップは3つあります。</li>
+                    <li>1周20マスのマップを進みます。</li>
+                    <li>1ターンに使用できる能力は1回です。</li>
+                    <li>能力にはクールタイムがあります。</li>
+                    <li>どちらかの陣営が壊滅するまでゲームは続きます。</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!--javaのコード-->
+    <script>
+
+    //タブ切り替えのコード
+    document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+
+        // タブの見た目切り替え
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+
+        // コンテンツ切り替え
+        const target = tab.dataset.target;
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        document.getElementById(target).classList.add("active");
+    });
+    });
+
+    //サイコロをクリックして回転させる
+    document.querySelectorAll(".dice").forEach(dice => {
+    dice.addEventListener("click", () => {
+        dice.classList.remove("roll");
+        void dice.offsetWidth;
+        dice.classList.add("roll");
+    });
+    });
+
+    //Life♥Wolfのモード選択　
+    let deathMode = "on";
+    let battleMode = "team";
+
+    function updateModeDescription(){
+
+        const area = document.getElementById("modeDescription");
+
+        if(deathMode==="on" && battleMode==="team"){
+
+            area.innerHTML=`
+            <h3>脱落あり × 陣営戦</h3>
+
+            <p>
+            プレイヤーは死亡するとゲームから脱落します。<br>
+            最後に勝利した陣営のプレイヤー全員が勝利となります。
+            </p>
+            `;
+
+        }
+
+        else if(deathMode==="off" && battleMode==="team"){
+
+            area.innerHTML=`
+            <h3>脱落なし × 陣営戦</h3>
+
+            <p>
+            死亡してもゲームは続行できます。<br>
+            最後に勝利した陣営が勝利となります。
+            </p>
+            `;
+
+        }
+
+        else if(deathMode==="on" && battleMode==="solo"){
+
+            area.innerHTML=`
+            <h3>脱落あり × 個人戦</h3>
+
+            <p>
+            死亡すると脱落します。<br>
+            最終的に最も資産が多いプレイヤーが勝利です。
+            </p>
+            `;
+
+        }
+
+        else{
+
+            area.innerHTML=`
+            <h3>脱落なし × 個人戦</h3>
+
+            <p>
+            最後まで全員参加します。<br>
+            ゲーム終了時に最も資産が多いプレイヤーが勝利です。
+            </p>
+            `;
+
+        }
+
+    }
+
+    document.querySelectorAll(".mode-btn").forEach(btn=>{
+
+        btn.addEventListener("click",()=>{
+
+            const group=btn.dataset.group;
+
+            document.querySelectorAll(
+            `.mode-btn[data-group="${group}"]`
+            ).forEach(b=>b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            if(group==="death"){
+                deathMode=btn.dataset.value;
+            }else{
+                battleMode=btn.dataset.value;
+            }
+
+            updateModeDescription();
+
+        });
+
+    });
+
+    updateModeDescription();
+
+    //閉じるボタン
+    function closeGuide(){
+
+        // ポップアップで開かれている場合は閉じる
+        if(window.opener){
+            window.close();
+        }else{
+            // 通常のページとして開いた場合は戻る
+            history.back();
+        }
+
+    }
+
+    </script>
+
+</div>
+</body>
+</html>
