@@ -304,27 +304,29 @@ body{
 
   <!-- ボトムナビ -->
   <nav class="bottom-nav">
-    <button class="nav-btn">♬ クレジット</button>
-    <button class="nav-btn" onclick="openGuide()">📖 遊び方</button>
+    <button class="nav-btn" onclick="openPopup('kurejitto.html','credit')">♬ クレジット</button>
+    <button class="nav-btn" onclick="openPopup('asobi_setumei.html','asobiGuide')">📖 遊び方</button>
     <button class="nav-btn">⚙️ 設定</button>
   </nav>
 </div>
 
 <script>
-// 「遊び方」ボタン：説明ページをポップアップウィンドウで開く。
-// 既に開いていれば新しく開き直さず、そのウィンドウにフォーカスするだけにする。
-let guideWindow = null;
-function openGuide(){
-  if (guideWindow && !guideWindow.closed) {
-    guideWindow.focus();
+// 下部ナビの各ボタン：説明ページをポップアップウィンドウで開く共通処理。
+// windowNameごとに開いたウィンドウを覚えておき、既に開いていれば
+// 新しく開き直さずそのウィンドウにフォーカスするだけにする。
+const openPopups = {};
+function openPopup(url, windowName){
+  const existing = openPopups[windowName];
+  if (existing && !existing.closed) {
+    existing.focus();
     return;
   }
   const w = 960, h = 800;
   const left = Math.max(0, (window.screen.width - w) / 2);
   const top = Math.max(0, (window.screen.height - h) / 2);
-  guideWindow = window.open(
-    'asobi_setumei.html',
-    'asobiGuide',
+  openPopups[windowName] = window.open(
+    url,
+    windowName,
     `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`
   );
 }
