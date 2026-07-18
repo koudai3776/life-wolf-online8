@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クレジット</title>
+</head>
+
+<!--cssのコード-->
+<style>
+body{
+    font-family: "Yu Gothic", sans-serif;
+    background:#f5f7fa;
+    margin:0;
+    padding:30px;
+}
+
+.bg{
+    position:fixed;inset:0;z-index:0;
+    background:
+    radial-gradient(ellipse at 70% 10%, #0d1a3a 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, #1a0d2a 0%, transparent 50%),
+    #06080f;
+}
+
+.container{
+    position:relative; /*「この要素を位置指定できる状態にする」**という意味*/
+    z-index:1; /*「前後関係（重なり順）」**を決めるもの*/
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+
+    display:flex;
+    flex-direction:column;
+}
+
+h1{
+    text-align:center;
+    /*color:#2c3e50;
+    margin-bottom:30px;
+    animation: fadein 2.0s ease 0s forwards;*/
+    font-size:52px;font-weight:900;letter-spacing:4px;
+    background:linear-gradient(135deg,#ff8833 0%,#ee44aa 50%,#9944ff 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    animation: fadein 2.0s ease 0s forwards;
+}
+
+h2{
+    text-align:center;
+    color:#3498db;
+    /*border-left:5px solid #3498db;*/
+    padding-left:10px;
+}
+
+.left-line {
+    border-left: 5px solid #3498db;
+    padding-left: 10px; /* 文字との距離 */
+}
+
+.jikan{
+    opacity: 0;                 /* ← 最初は透明 */
+    animation: fadein 2.0s ease 0.5s forwards;
+}
+
+.jikan2{
+    opacity: 0;                 /* ← 最初は透明 */
+    animation: fadein 2.0s ease 1.0s forwards;
+}
+
+.jikan3{
+    opacity: 0;                 /* ← 最初は透明 */
+    animation: fadein 2.0s ease 1.5s forwards;
+}
+
+@keyframes fadein {
+    from { opacity: 0; transform: translateY(-10px);  }
+    to   {opacity: 1; transform: translateY(0); }
+}
+
+p {
+    text-align:center;
+    font-size: 25px;
+}
+
+.section1{
+    margin-bottom:25px;
+    opacity: 0;                 /* ← 最初は透明 */
+    animation: fadein 2.0s ease 0.5s forwards;
+}
+
+.section2{
+    margin-bottom:25px;
+    opacity: 0;                 /* ← 最初は透明 */
+    animation: fadein 2.0s ease 1.0s forwards;
+}
+
+.section3{
+    margin-bottom: 25px;
+    opacity: 0;                 /* ← 最初は透明 */
+    animation: fadein 2.0s ease 1.5s forwards;
+}
+
+.back-btn{
+    margin-left:auto; /* 右端に寄せる */
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:#ff7675;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.2s;
+}
+
+.back-btn:hover{
+    background:#ff6b6b;
+}
+
+
+</style>
+
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+    <button class="back-btn" onclick="closeGuide()">閉じる</button>
+
+    <h1>
+        <span class="dice">♪</span>クレジット<span class="dice">♪</span>
+    </h1>
+
+    <h2 class="section1">
+        <span class="left-line"></span>サイト名
+    </h2>
+
+    <p class="jikan">甘茶の音楽工房</p>
+
+    <h2 class="section2">
+        <span class="left-line"></span>作曲者
+    </h2>
+
+    <p class="jikan2">甘茶</p>
+
+    <h2 class="section3">
+        <span class="left-line"></span>URL
+    </h2>
+
+    <p class="jikan3">https://amachamusic.chagasi.com/</p>
+
+</div>
+
+<script>
+
+function closeGuide(){
+
+    // ポップアップで開かれている場合は閉じる
+    if(window.opener){
+        window.close();
+    }else{
+        // 通常のページとして開いた場合は戻る
+        history.back();
+    }
+
+}
+
+</script>
+
+</body>
