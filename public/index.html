@@ -67,7 +67,19 @@ body{
 }
 
 /* ===== ヘッダー ===== */
-.hub-header{text-align:center;margin-bottom:48px}
+/* LIFE WOLF のロゴ・サブタイトルは常にページ中央に来てほしいので、
+   画像と同じ幅の透明スペーサーを左側にも置く3カラムgridにする。
+   （左右の幅が同じになるため、中央のテキストは画像の有無に関わらず常に中央になる）
+   画像は通常フロー内の要素なので、下のカードと重なることもない。 */
+.hub-header{
+  display:grid;
+  grid-template-columns: var(--corner-img-w) auto var(--corner-img-w);
+  align-items:end;
+  column-gap:clamp(12px,2.5vw,32px);
+  margin-bottom:48px;
+}
+.header-text{grid-column:2;text-align:center}
+.corner-image-spacer{grid-column:1}
 .logo-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
 .logo-icon{
   width:52px;height:52px;
@@ -83,7 +95,7 @@ body{
 }
 .collection-label{
   font-size:12px;letter-spacing:4px;color:#3a4880;
-  display:flex;align-items:center;gap:12px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;
   font-weight:600;
 }
 .collection-label::before,.collection-label::after{
@@ -199,21 +211,30 @@ body{
   .hub{padding:32px 14px 24px}
 }
 
-/* 右上の月と狼 */
+/* 右上の月と狼（.hub-headerの3カラムgridの右端に配置。通常フロー内の要素なので
+   画像の分だけ自動的にスペースが確保され、下のカードと重なることがない。
+   align-items:endにより画像の下端がサブタイトル文の下端あたりに揃う） */
+:root{ --corner-img-w: clamp(100px, 10vw, 170px); }
+
 .corner-image{
-    position: absolute;
-    top: 0px;
-    right: 25%;
-    width: min(18vw, 200px);
-    max-width: 200px;
-    min-width: 120px;
+    grid-column: 3;
+    justify-self: start;
+    width: var(--corner-img-w);
     height: auto;
-    z-index: 10;
-    pointer-events: none;
+    z-index: 5;
+    pointer-events: none; /* クリックを邪魔しない */
     opacity: 0.9;
 }
 
-
+@media(max-width:900px){
+  .corner-image, .corner-image-spacer{
+    display: none; /* 幅が狭いとロゴ・カードと重なるため非表示 */
+  }
+  .hub-header{
+    grid-template-columns: 1fr; /* スペーサー分の列も削除してテキストのみ中央に */
+  }
+  .header-text{ grid-column: 1; }
+}
 
 </style>
 </head>
@@ -221,9 +242,6 @@ body{
 
 <div class="bg"></div>
 <div class="stars"></div>
-
-<img src="image/moon_wolf.png" class="corner-image" alt="月と狼">
-
 
 <!-- パーティクル -->
 <div class="particle" style="left:15%;width:4px;height:4px;background:#4488ff55;animation-duration:8s;animation-delay:0s"></div>
@@ -237,12 +255,16 @@ body{
 <div class="hub">
   <!-- ヘッダー -->
   <header class="hub-header">
-    <div class="logo-wrap">
-      <div class="logo-icon">🐺</div>
-      <div class="logo-text">LIFE WOLF</div>
+    <div class="corner-image-spacer" aria-hidden="true"></div>
+    <div class="header-text">
+      <div class="logo-wrap">
+        <div class="logo-icon">🐺</div>
+        <div class="logo-text">LIFE WOLF</div>
+      </div>
+      <div class="collection-label">GAME COLLECTION</div>
+      <p class="hub-sub">遊びたいゲームを選択してください</p>
     </div>
-    <div class="collection-label">GAME COLLECTION</div>
-    <p class="hub-sub">遊びたいゲームを選択してください</p>
+    <img src="image/moon_wolf.png" class="corner-image" alt="月と狼">
   </header>
 
   <!-- ゲームカード -->
