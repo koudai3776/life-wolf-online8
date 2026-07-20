@@ -6,7 +6,7 @@ body{background:#080a18;color:#c0cce0;font-family:'Segoe UI',system-ui,sans-seri
 
 /* ===== LOBBY ===== */
 .lobby-wrap{display:flex;flex-direction:column;align-items:center;padding:40px 16px;min-height:100vh}
-.lw-logo{font-size:42px;font-weight:900;background:linear-gradient(135deg,#ff8833,#ee44aa,#9944ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;margin-bottom:4px}
+.lw-logo{font-size:42px;font-weight:900;background:linear-gradient(135deg,#ff8833,#ee44aa,#9944ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px;margin-bottom:4px}
 .lw-sub{font-size:14px;color:#5060a0;margin-bottom:28px;letter-spacing:2px}
 .lw-card{background:#0d1025;border:1px solid #1c2040;border-radius:16px;padding:28px;width:100%;max-width:480px}
 .lw-field{margin-bottom:18px}
@@ -34,7 +34,7 @@ body{background:#080a18;color:#c0cce0;font-family:'Segoe UI',system-ui,sans-seri
 /* ===== ROOM WAITING ===== */
 .room-wrap{padding:24px;max-width:860px;margin:0 auto}
 .room-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.lw-logo-sm{font-size:22px;font-weight:800;background:linear-gradient(135deg,#ff8833,#ee44aa,#9944ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lw-logo-sm{font-size:22px;font-weight:800;background:linear-gradient(135deg,#ff8833,#ee44aa,#9944ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .room-code{font-size:13px;color:#5060a0}
 .room-code span{font-size:18px;font-weight:800;color:#8877ee;letter-spacing:3px}
 .room-main{display:grid;grid-template-columns:1fr 1fr;gap:16px}
